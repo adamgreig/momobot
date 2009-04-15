@@ -110,9 +110,9 @@
 <p>
 <div class="fragment"><pre class="fragment">
 Connect to the server and set our nickname
-\param server The IRC server to connect to
-\param port The IRC port to connect to
-\param nickname The nickname to use on IRC
+server: The IRC server to connect to
+port: The IRC port to connect to
+nickname: The nickname to use on IRC
 </pre></div> 
 </div>
 </div><p>
@@ -144,7 +144,7 @@ Connect to the server and set our nickname
 <p>
 <div class="fragment"><pre class="fragment">
 Identify with NickServ
-\param password The NickServ password
+password: The NickServ password
 </pre></div> 
 </div>
 </div><p>
@@ -176,7 +176,7 @@ Identify with NickServ
 <p>
 <div class="fragment"><pre class="fragment">
 Join a channel
-\param channel The channel to join, including the #
+channel: The channel to join, including the #
 </pre></div> 
 </div>
 </div><p>
@@ -230,7 +230,7 @@ Leave the current channel
 <p>
 <div class="fragment"><pre class="fragment">
 Quit the server
-\param message The quit message to use
+message: The quit message to use
 </pre></div> 
 </div>
 </div><p>
@@ -262,7 +262,7 @@ Quit the server
 <p>
 <div class="fragment"><pre class="fragment">
 Say a message to the channel
-\param message Message to say
+message: Message to say
 </pre></div> 
 </div>
 </div><p>
@@ -300,8 +300,8 @@ Say a message to the channel
 <p>
 <div class="fragment"><pre class="fragment">
 PM someone
-\param user The username to PM
-\param message The message to send them
+user: The username to PM
+message: The message to send them
 </pre></div> 
 </div>
 </div><p>
@@ -339,8 +339,8 @@ PM someone
 <p>
 <div class="fragment"><pre class="fragment">
 Send someone a notice
-\param user The username to send the notice to
-\param message The message to send them
+user: The username to send the notice to
+message: The message to send them
 </pre></div> 
 </div>
 </div><p>
@@ -438,9 +438,9 @@ NOTICE: pass
 
 PRIVMSG: the main command, split it up and see what it is
 
-\param sender The full sender string
-\param command The command from the IRC server
-\param text Everything following the command
+sender: The full sender string
+command: The command from the IRC server
+text: Everything following the command
 </pre></div> 
 </div>
 </div><p>
@@ -478,8 +478,8 @@ PRIVMSG: the main command, split it up and see what it is
 <p>
 <div class="fragment"><pre class="fragment">
 Try to call a registered callback with the proper data dictionary
-\param callback_type The callback to try calling. E.g., 'channel_message'
-\param data The dictionary that should be passed to the callback function
+callback_type: The callback to try calling. E.g., 'channel_message'
+data: The dictionary that should be passed to the callback function
 </pre></div> 
 </div>
 </div><p>
@@ -517,9 +517,10 @@ Try to call a registered callback with the proper data dictionary
 <p>
 <div class="fragment"><pre class="fragment">
 Register a callback function
-\param callback_type The type of callback, e.g., 'channel_message'
-\param callback The actual function that should be called. It must
-accept a single argument, a dictionary of the relevent data.
+callback_type: The type of callback, e.g., 'channel_message'
+callback: The actual function that should be called. It must
+accept a two arguments: a dictionary of the relevent data and
+a reference to the current IRC connection
 </pre></div> 
 </div>
 </div><p>
@@ -602,7 +603,7 @@ accept a single argument, a dictionary of the relevent data.
 <hr>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="irc_8py.html">irc.py</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Apr 15 01:35:11 2009 for MomoBot by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Apr 15 02:08:56 2009 for MomoBot by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
