@@ -37,6 +37,7 @@ class IRC:
         """
         self.channel = channel
         self.socket.send('JOIN %s\r\n' % channel)
+        self.__callback('join', {'channel': channel})
     
     def part(self):
         """
@@ -137,6 +138,15 @@ class IRC:
                 data = message.split(' ')[1]
                 data = data.strip('\001')
                 self.socket.send('NOTICE %s :\001PING %s\001\r\n' % (username, data))
+        elif command == "JOIN":
+            try:
+                username = sender.split('!')[0].split(':')[1]
+                channel = text.split(':')[1]
+            except IndexError:
+                return
+                
+            if channel == self.channel:
+                self.__callback('channel_join', {'username': username})
     
     def __callback(self, callback_type, data):
         """
@@ -146,15 +156,17 @@ class IRC:
         """
         try:
             callback = self.callbacks[callback_type]
-            callback(data)
+            callback(self, data)
         except KeyError, TypeError:
-            print "Invalid or no callback for action %s." % callback_type
+            #print "Invalid or no callback for action %s." % callback_type
+            pass
     
     def register_callback(self, callback_type, callback):
         """
         Register a callback function
         callback_type: The type of callback, e.g., 'channel_message'
         callback: The actual function that should be called. It must
-        accept a single argument, a dictionary of the relevent data.
+        accept a two arguments: a dictionary of the relevent data and
+        a reference to the current IRC connection
         """
         self.callbacks[callback_type] = callback
