@@ -1,10 +1,12 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 The main bot file
 """
 
 import settings
-import irc
+from irc import irc
+from bot import commands
 
 def public_message(irc, data):
     print "Received a message:"
