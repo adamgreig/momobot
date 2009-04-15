@@ -21,7 +21,8 @@ class IRC:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((server, port))
         self.socket.send('NICK %s\r\n' % nickname)
-        self.socket.send('USER %s %s %s :%s\r\n' % (nickname, nickname, nickname, nickname))
+        self.socket.send('USER %s %s %s :%s\r\n' % 
+                         (nickname, nickname, nickname, nickname))
     
     def identify(self, password):
         """
@@ -131,13 +132,16 @@ class IRC:
                 return
             
             if target == self.channel:
-                self.__callback('channel_message', {'username': username, 'message': message})
+                self.__callback('channel_message',
+                    {'username': username, 'message': message})
             elif message == "\001VERSION\001":
-                self.socket.send('NOTICE %s :\001VERSION Momobot v0.1a1\001\r\n' % username)
+                self.socket.send(
+                    'NOTICE %s :\001VERSION Momobot v0.1a1\001\r\n' % username)
             elif message.find("\001PING") == 0:
                 data = message.split(' ')[1]
                 data = data.strip('\001')
-                self.socket.send('NOTICE %s :\001PING %s\001\r\n' % (username, data))
+                self.socket.send(
+                    'NOTICE %s :\001PING %s\001\r\n' % (username, data))
         elif command == "JOIN":
             try:
                 username = sender.split('!')[0].split(':')[1]
