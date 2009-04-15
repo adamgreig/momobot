@@ -7,7 +7,8 @@ import settings
 import irc
 
 def public_message(irc, data):
-    irc.say('You said something, %s!' % data['username'])
+    print "Received a message:"
+    print data
 
 def just_joined(irc, data):
     irc.say('Hello, everyone!')
