@@ -6,6 +6,6 @@ PASSWORD = 'momo'
 SERVER = 'irc.rizon.net'
 PORT = 6667
 
-CHANNEL = '#op9'
+CHANNEL = '#momobot'
 
 COMMAND_INDICATOR = '!'
