@@ -29,12 +29,14 @@ class Bot:
         self.irc.read()
     
     def process_message(self, data):
-        for command_indicator in self.settings.COMMAND_INDICATOR:
+        for command_indicator in self.settings.COMMAND_INDICATORS:
             if data['message'].startswith(command_indicator):
-                data['message'] = data['message'].replace(command_indicator, '')
+                data['message'] = data['message'].replace(command_indicator,
+                                                          '', 1)
                 for command in self.commands:
                     if data['message'].startswith(command):
-                        data['message'] = data['message'].replace(command, '')
+                        data['message'] = data['message'].replace(command,
+                                                                  '', 1)
                         data['message'] = data['message'].lstrip()
                         command = self.commands[command]
                         time.sleep(self.settings.COMMAND_DELAY)
