@@ -5,24 +5,53 @@ Handle talking to an IRC server.
 
 import socket
 
+class IRCError(Exception):
+    """
+    All IRC errors inherit from this base class
+    """
+    pass
+
+class ChannelError(IRCError):
+    """
+    A command was issued for a channel we are not in
+    """
+    def __init__(self, channel):
+        self.channel = channel
+    def __str__(self):
+        return "A command was issued for a channel we are not in: %s" %
+                self.channel
+
 class IRC:
-    """Connect to and communicate with an IRC server."""
+    """
+    Connect to and communicate with an IRC server.
+    """
     
-    def __init__(self, server, port, nickname):
+    def __init__(self, nickname):
         """
-        Connect to the server and set our nickname
-        server: The IRC server to connect to
-        port: The IRC port to connect to
-        nickname: The nickname to use on IRC
+        Store our nickname, initialise various class properties
         """
         self.nickname = nickname
+        self.version = "Momobot v0.1a" #TODO define this somewhere else
+        
         self.callbacks = {}
+        self.channels = []
         
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    def connect(self, server, port):
+        """
+        Actually connect to the server
+        """
+        nickname = self.nickname
+        
         self.socket.connect((server, port))
+        
         self.socket.send('NICK %s\r\n' % nickname)
         self.socket.send('USER %s %s %s :%s\r\n' % 
                          (nickname, nickname, nickname, nickname))
+        
+        self.__callback('connect', {'server': server, 'port': port,
+                        'nickname': nickname})
     
     def identify(self, password):
         """
@@ -30,21 +59,33 @@ class IRC:
         password: The NickServ password
         """
         self.socket.send('PRIVMSG nickserv :identify %s\r\n' % password)
+        self.__callback('identify', {'nickname': self.nickname})
     
     def join(self, channel):
         """
         Join a channel
         channel: The channel to join, including the #
         """
-        self.channel = channel
+        self.channels.append(channel)
         self.socket.send('JOIN %s\r\n' % channel)
         self.__callback('join', {'channel': channel})
     
-    def part(self):
+    def part(self, channel=''):
         """
-        Leave the current channel
+        Leave a specific or all channels
         """
-        self.socket.send('PART %s\r\n' % self.channel)
+        if channel != '':
+            if channel in self.channels:
+                self.socket.send('PART %s\r\n' % channel)
+                self.__callback('part', {'channel': channel})
+                self.channels.remove(channel)
+            else
+                raise ChannelError(channel)
+        else:
+            for channel in self.channels:
+                self.socket.send('PART %s\r\n' % channel)
+                self.__callback('part', {'channel': channel})
+                self.channels.remove(channel)
     
     def quit(self, message='Momobot Disconnected'):
         """
@@ -53,13 +94,30 @@ class IRC:
         """
         self.socket.send('QUIT :%s\r\n' % message)
         self.socket.close()
+        self.channels = []
+        self.__callback('quit', {})
     
-    def say(self, message):
+    def say(self, message, channel=''):
         """
-        Say a message to the channel
-        message: Message to say
+        Say a message to the channel or all channels
         """
-        self.socket.send('PRIVMSG %s :%s\r\n' % (self.channel, message))
+        if channel != '':
+            if channel in self.channels:
+                self.socket.send('PRIVMSG %s :%s\r\n' % 
+                                 (channel, message))
+            else:
+                raise ChannelError(channel)
+        else:
+            for channel in self.channels:
+                self.socket.send('PRIVMSG %s: %s\r\n' %
+                                 (channel, message))
+    
+    def act(self, message, channel=''):
+        """
+        Send a CTCP action to the channel or all channels
+        """
+        message = '\001ACTION ' + message + '\001'
+        self.say(message, channel)
     
     def privmsg(self, user, message):
         """
@@ -80,18 +138,21 @@ class IRC:
     def read(self):
         """
         Read in data from the IRC socket then parse it
+        This should be called all the time
         """
-        self.buffer = self.socket.recv(4096)
-        self.__parse()
+        recv_buffer = self.socket.recv(4096)
+        self.__parse(recv_buffer)
     
-    def __parse(self):
+    
+    def __parse(self, recv_buffer):
         """
         Parse the current buffer, processing each \r\n-terminated line
         at a time, splitting it into sender/command/text, then parsing
         it if it was successfully split
         """
-        while self.buffer.find('\r\n') is not -1:
-            message = self.buffer.split('\r\n')[0].split(' ')
+        messages = recv_buffer.split('\r\n')
+        for message in messages:
+            message_parts = message.split(' ')
             try:
                 sender = message[0]
                 command = message[1]
@@ -100,19 +161,11 @@ class IRC:
                 pass
             else:
                 self.__process_irc_command(sender, command, text)
-            finally:
-                self.buffer = self.buffer[self.buffer.find('\r\n') + 2:]
     
     def __process_irc_command(self, sender, command, text):
         """
         Process a command from the IRC server
         Commands such as PING, NOTICE and PRIVMSG are processed here.
-        
-        PING: send a PONG reply to the server, letting it know we're alive
-        
-        NOTICE: pass
-        
-        PRIVMSG: the main command, split it up and see what it is
         
         sender: The full sender string
         command: The command from the IRC server
@@ -120,37 +173,75 @@ class IRC:
         """
         if command == "PING":
             self.socket.send('PONG %s\r\n' % text)
-        elif command == "NOTICE":
-            #Right now, we shouldn't get notices. So do nothing.
-            pass
-        elif command == "PRIVMSG":
-            try:
-                username = sender.split('!')[0].split(':')[1]
-                target = text.split(':')[0].strip()
-                message = text.split(':')[1]
-            except IndexError:
-                return
-            
-            if target == self.channel:
-                self.__callback('channel_message',
-                    {'username': username, 'message': message})
-            elif message == "\001VERSION\001":
-                self.socket.send(
-                    'NOTICE %s :\001VERSION Momobot v0.1a1\001\r\n' % username)
-            elif message.find("\001PING") == 0:
-                data = message.split(' ')[1]
-                data = data.strip('\001')
-                self.socket.send(
-                    'NOTICE %s :\001PING %s\001\r\n' % (username, data))
+        elif command == "NOTICE" or command == "PRIVMSG":
+            self.__process_message(sender, command, text)
         elif command == "JOIN":
             try:
                 username = sender.split('!')[0].split(':')[1]
                 channel = text.split(':')[1]
             except IndexError:
                 return
-                
-            if channel == self.channel:
+            if channel in self.channels:
                 self.__callback('channel_join', {'username': username})
+    
+    def __process_message(self, sender, command, text):
+        """
+        Process a normal message that was received, deciding whether it
+        should be handled by the CTCP processor or else whether it is a
+        channel or private message or notice.
+        """
+        try:
+            username = sender.split('!')[0].split(':')[1]
+            target = text.split(':')[0].strip()
+            message = text.split(':')[1]
+        except IndexError:
+            return
+        
+        if message.startswith('\001'):
+            self.__process_ctcp(username, target, message)
+        else:
+            if target in self.channels:
+                if command == "PRIVMSG":
+                    self.__callback('channel_message', {'channel': target,
+                     'username': username, 'message': message})
+                elif command == "NOTICE":
+                    self.__callback('channel_notice', {'channel': target,
+                     'username': username, 'message': message})
+            elif target == self.nickname:
+                if command == "PRIVMSG":
+                    self.__callback('private_message', {'username': username,
+                     'message': message})
+                elif command == "NOTICE":
+                    self.__callback('private_notice', {'username': username,
+                     'message': message})
+    
+    def __process_ctcp(self, username, target, message):
+        """
+        Process CTCP requests. Not all CTCP messages are supported.
+        """
+        if message.startswith('\001VERSION\001'):
+            self.socket.send('NOTICE: %s :\001%s\001\r\n' % username,
+                             self.version)
+        elif message.startswith('\001PING'):
+            data = message.split(' ')[1]
+            data = data.strip('\001')
+            self.socket.send('NOTICE %s:\001PING %s\001\r\n' %
+                             (username, data))
+        elif message.startswith('\001ACTION'):
+            data = message.split(' ')[1:]
+            data = ' '.join(data)
+            data = data.strip('\001')
+            if target in self.channels:
+                self.__callback('channel_action', {'channel': target,
+                 'username': username, 'message': message})
+            elif target == self.nickname:
+                self.__callback('private_action', {'username': username,
+                 'message': message})
+        elif message.startswith('\001TIME\001'):
+            import time
+            self.socket.send('NOTICE %s:\001TIME :%s\001\r\n' % username,
+                time.asctime())
+    
     
     def __callback(self, callback_type, data):
         """
@@ -161,7 +252,7 @@ class IRC:
         try:
             callback = self.callbacks[callback_type]
             callback(self, data)
-        except KeyError, TypeError:
+        except (KeyError, TypeError):
             #print "Invalid or no callback for action %s." % callback_type
             pass
     

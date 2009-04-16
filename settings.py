@@ -13,3 +13,6 @@ CHANNEL = '#momobot'
 
 # A list of command indicators
 COMMAND_INDICATOR = ['!', '.', 'momo, ']
+
+# The IRC VERSION reply
+CTCP_VERSION = 'Momobot v0.1a'
