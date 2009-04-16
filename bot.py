@@ -5,7 +5,7 @@ Handle actually being a useful bot
 
 import time
 import irc
-import commands
+import command_loader
 
 class BotError(Exception):
     pass
@@ -20,7 +20,7 @@ class Bot:
         self.nickname = settings.NICKNAME
         self.irc = irc.IRC(settings.NICKNAME, settings.CTCP_VERSION)
         self.commands = {}
-        commands.Commands(self)
+        command_loader.CommandLoader(self)
         self.irc.register_callback('channel_message', self.process_message)
         self.irc.connect(settings.SERVER, settings.PORT)
         self.irc.join(settings.CHANNEL)
@@ -38,7 +38,7 @@ class Bot:
                         data['message'] = data['message'].lstrip()
                         command = self.commands[command]
                         time.sleep(self.settings.COMMAND_DELAY)
-                        command(self, data)
+                        command(data)
                         return
     
     def register_command(self, command_name, command):
