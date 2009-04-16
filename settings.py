@@ -12,7 +12,7 @@ PORT = 6667
 CHANNEL = '#op9'
 
 # A list of command indicators
-COMMAND_INDICATOR = ['!', '.', 'momo, ']
+COMMAND_INDICATORS = ['!', '.', 'momo, ']
 
 # How long to wait before replying to a command (secs)
 COMMAND_DELAY = 0.3

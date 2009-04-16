@@ -29,7 +29,7 @@ class Bot:
         self.irc.read()
     
     def process_message(self, data):
-        for command_indicator in self.settings.COMMAND_INDICATOR:
+        for command_indicator in self.settings.COMMAND_INDICATORS:
             if data['message'].startswith(command_indicator):
                 data['message'] = data['message'].replace(command_indicator,
                                                           '', 1)
