@@ -5,6 +5,9 @@ import feedparser
 twitter_feed_url = 'http://twitter.com/statuses/user_timeline/%s.rss'
 
 class Twitter:
+    """
+    Grab a twitter user's latest update. Also socks (sockington) is hardcoded.
+    """
     def __init__(self, bot):
         self.bot = bot
         bot.register_command('socks', self.socks)
@@ -19,5 +22,5 @@ class Twitter:
                                           feed.entries[0]['updated']))
 
     def socks(self, data):
-        data['message'] = 'socks'
+        data['message'] = 'sockington'
         self.twitter(data)
