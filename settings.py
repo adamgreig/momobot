@@ -9,7 +9,7 @@ SERVER = 'irc.rizon.net'
 PORT = 6667
 
 # The channel to join
-CHANNEL = '#momobot'
+CHANNEL = '#op9'
 
 # A list of command indicators
 COMMAND_INDICATOR = ['!', '.', 'momo, ']
