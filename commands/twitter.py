@@ -19,7 +19,8 @@ class Twitter:
         feed = feedparser.parse(feed_url)
         if len(feed.entries) > 0:
             self.bot.irc.say('%s (%s)' % (feed.entries[0]['title'],
-                                          feed.entries[0]['updated']))
+                                          feed.entries[0]['updated']),
+                             data['channel'])
 
     def socks(self, data):
         data['message'] = 'sockington'

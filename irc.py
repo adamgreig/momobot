@@ -161,6 +161,8 @@ class IRC:
         """
         messages = recv_buffer.split('\r\n')
         for message in messages:
+            if message == '':
+                return
             message_parts = message.split(' ')
             try:
                 sender = message_parts[0]
@@ -180,8 +182,8 @@ class IRC:
         command: The command from the IRC server
         text: Everything following the command
         """
-        if command == "PING":
-            self.socket.send('PONG %s\r\n' % text)
+        if sender == "PING":
+            self.socket.send('PONG %s\r\n' % command)
         elif command == "NOTICE" or command == "PRIVMSG":
             self.__process_message(sender, command, text)
         elif command == "JOIN":
