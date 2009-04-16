@@ -8,9 +8,16 @@ class Commands:
         self.bot = bot
         bot.register_command('hello', self.hello)
         bot.register_command('momo', self.momo)
+        bot.irc.register_callback('channel_join', self.join)
     
-    def hello(self, bot, message):
-        bot.irc.say('Hello, World!')
+    def hello(self, bot, data):
+        bot.irc.say('Hello, %s!' % data['username'])
     
-    def momo(self, bot, message):
-        bot.irc.act('throws Momo on %s!' % message)
+    def momo(self, bot, data):
+        bot.irc.act('throws Momo on %s!' % data['message'])
+    
+    def join(self, data):
+        if data['username'] != self.bot.nickname:
+            self.bot.irc.say(
+                'Welcome to %s, %s!' % (data['channel'], data['username']),
+                data['channel'])

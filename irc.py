@@ -191,7 +191,8 @@ class IRC:
             except IndexError:
                 return
             if channel in self.channels:
-                self.__callback('channel_join', {'username': username})
+                self.__callback('channel_join', {'channel': channel,
+                                                 'username': username})
     
     def __process_message(self, sender, command, text):
         """
