@@ -1,0 +1,26 @@
+                MomoBot
+=======================================
+
+MomoBot is a small IRC bot written in Python that is simple to extend with
+new commands and reasonably fault tolerant. It was and is written to delight
+and entertain the community of a small IRC room.
+MomoBot is hosted on GitHub and licensed under the BSD license (see LICENSE).
+
+The easiest way to extend MomoBot is by adding a new command: a module
+containing a class is made for each group of commands and placed inside the
+commands/ directory. Check out momo.py for a simple example. Classes must be
+named after the module with a capital first letter only. The class constructor
+is passed a reference to the active Bot instance; it's probably best to store
+this in the class (self.bot = bot) and then you can use its IRC member for
+sending data over IRC. Commands are registered with bot.register_command(
+command name, command function) and the function is passed a data dictionary
+containing 'channel', 'username' and 'message'.
+
+Hey, maybe we'll even write some proper documentation. Anything's possible!
+
+If you're not despairing by now, you can grab the code:
+http://github.com/randomskk/momobot
+Where you can also fork, patch, send a pull req, etc etc
+
+Thanks!
+- MomoBot Authors
