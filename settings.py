@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# The IRC username and password to connect and identify with
-USERNAME = 'momobot2'
+# The IRC nickname and password to connect and identify with
+NICKNAME = 'momobot2'
 PASSWORD = 'momo'
 
 # The IRC server and port to connect to
@@ -13,6 +13,9 @@ CHANNEL = '#momobot'
 
 # A list of command indicators
 COMMAND_INDICATOR = ['!', '.', 'momo, ']
+
+# How long to wait before replying to a command (secs)
+COMMAND_DELAY = 0.3
 
 # The IRC VERSION reply
 CTCP_VERSION = 'Momobot v0.1a'

@@ -3,7 +3,9 @@
 Handle talking to an IRC server.
 """
 
+import time
 import socket
+import settings
 
 class IRCError(Exception):
     """
@@ -18,20 +20,27 @@ class ChannelError(IRCError):
     def __init__(self, channel):
         self.channel = channel
     def __str__(self):
-        return "A command was issued for a channel we are not in: %s" %
+        return "A command was issued for a channel we are not in: %s" % \
                 self.channel
+
+class CallbackError(IRCError):
+    """
+    A callback was registed that was not callable
+    """
+    def __str__(self):
+        return "A callback was registered which was not callable."
 
 class IRC:
     """
     Connect to and communicate with an IRC server.
     """
     
-    def __init__(self, nickname):
+    def __init__(self, nickname, version='Momobot'):
         """
         Store our nickname, initialise various class properties
         """
         self.nickname = nickname
-        self.version = "Momobot v0.1a" #TODO define this somewhere else
+        self.version = version
         
         self.callbacks = {}
         self.channels = []
@@ -79,7 +88,7 @@ class IRC:
                 self.socket.send('PART %s\r\n' % channel)
                 self.__callback('part', {'channel': channel})
                 self.channels.remove(channel)
-            else
+            else:
                 raise ChannelError(channel)
         else:
             for channel in self.channels:
@@ -109,7 +118,7 @@ class IRC:
                 raise ChannelError(channel)
         else:
             for channel in self.channels:
-                self.socket.send('PRIVMSG %s: %s\r\n' %
+                self.socket.send('PRIVMSG %s :%s\r\n' %
                                  (channel, message))
     
     def act(self, message, channel=''):
@@ -154,9 +163,9 @@ class IRC:
         for message in messages:
             message_parts = message.split(' ')
             try:
-                sender = message[0]
-                command = message[1]
-                text = ' '.join(message[2:])
+                sender = message_parts[0]
+                command = message_parts[1]
+                text = ' '.join(message_parts[2:])
             except IndexError:
                 pass
             else:
@@ -193,7 +202,7 @@ class IRC:
         try:
             username = sender.split('!')[0].split(':')[1]
             target = text.split(':')[0].strip()
-            message = text.split(':')[1]
+            message = ':'.join(text.split(':')[1:])
         except IndexError:
             return
         
@@ -220,12 +229,12 @@ class IRC:
         Process CTCP requests. Not all CTCP messages are supported.
         """
         if message.startswith('\001VERSION\001'):
-            self.socket.send('NOTICE: %s :\001%s\001\r\n' % username,
-                             self.version)
+            self.socket.send('NOTICE %s :\001VERSION %s\001\r\n' % (username,
+                             self.version))
         elif message.startswith('\001PING'):
             data = message.split(' ')[1]
             data = data.strip('\001')
-            self.socket.send('NOTICE %s:\001PING %s\001\r\n' %
+            self.socket.send('NOTICE %s :\001PING %s\001\r\n' %
                              (username, data))
         elif message.startswith('\001ACTION'):
             data = message.split(' ')[1:]
@@ -238,7 +247,6 @@ class IRC:
                 self.__callback('private_action', {'username': username,
                  'message': message})
         elif message.startswith('\001TIME\001'):
-            import time
             self.socket.send('NOTICE %s:\001TIME :%s\001\r\n' % username,
                 time.asctime())
     
@@ -251,7 +259,7 @@ class IRC:
         """
         try:
             callback = self.callbacks[callback_type]
-            callback(self, data)
+            callback(data)
         except (KeyError, TypeError):
             #print "Invalid or no callback for action %s." % callback_type
             pass
@@ -264,4 +272,7 @@ class IRC:
         accept a two arguments: a dictionary of the relevent data and
         a reference to the current IRC connection
         """
-        self.callbacks[callback_type] = callback
+        if callable(callback):
+            self.callbacks[callback_type] = callback
+        else:
+            raise CommandError
