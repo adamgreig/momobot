@@ -45,7 +45,7 @@ class Quotes:
         if quotee == self.bot.nickname:
             quotee = random.choice(self.quotes.keys())
         
-        self.bot.say(self.__get_quote(requester, quotee))
+        self.bot.irc.say(self.__get_quote(requester, quotee))
 
     def __get_quote(self, requester, quotee):
         if self.quotes.has_key(quotee):
