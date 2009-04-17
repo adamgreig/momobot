@@ -42,15 +42,17 @@ class Quotes:
         if len(quotee) == 0:
             quotee = requester
         
-        if quotee == self.bot.nickname:
+        if quotee == self.bot.nickname and self.quotes:
             quotee = random.choice(self.quotes.keys())
         
         self.bot.irc.say(self.__get_quote(requester, quotee))
 
     def __get_quote(self, requester, quotee):
-        if self.quotes.has_key(quotee):
+        if quotee in self.quotes:
             return '"%s" - %s' % (self.quotes[quotee], quotee)
         elif quotee == requester:
             return 'Sorry, you never set a quote. Try the setquote command!'
+        elif quotee == self.bot.nickname:
+            return 'Sorry, but there are no quotes. Try setting one!'
         else:
             return "%s hasn't set a quote yet." % quotee
