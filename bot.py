@@ -23,6 +23,8 @@ class Bot:
         command_loader.CommandLoader(self)
         self.irc.register_callback('channel_message', self.process_message)
         self.irc.connect(settings.SERVER, settings.PORT)
+        if settings.PASSWORD:
+            self.irc.identify(settings.PASSWORD)
         self.irc.join(settings.CHANNEL)
     
     def process(self):
