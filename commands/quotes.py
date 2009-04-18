@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 # Peter Zatka-Haas - April 2009
 
+import os
+import pickle
 import random
+                               
+quotes_file = "commands/quotes.db"                      
 
 class Quotes:
     """
@@ -26,18 +30,20 @@ class Quotes:
     
     def __init__(self, bot):
         self.bot = bot
-        self.quotes = {}
+        self.__load_quotes()
         bot.register_command('setquote', self.set_quote)
         bot.register_command('quote', self.get_quote)
+
     
     def set_quote(self, data):
         self.quotes[data['username']] = data['message']
         self.bot.irc.say("Okay, %s" % data['username'], data['channel'])
+        self.__store_quotes()
     
     def get_quote(self, data):
         requester = data['username']
         quotee = data['message']
-        quotee.strip()
+        quotee = quotee.strip()
         
         if len(quotee) == 0:
             quotee = requester
@@ -56,3 +62,18 @@ class Quotes:
             return 'Sorry, but there are no quotes. Try setting one!'
         else:
             return "%s hasn't set a quote yet." % quotee
+            
+    def __store_quotes(self):
+        f = open(quotes_file, 'w')
+        pickle.dump(self.quotes, f)
+        f.close()
+    
+    def __load_quotes(self):
+        if os.path.exists(quotes_file):
+            f = open(quotes_file, 'r')
+            self.quotes = pickle.load(f)
+            f.close()
+        else:
+            self.quotes = {}
+        
+        
