@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # The IRC nickname and password to connect and identify with
-NICKNAME = 'momobot2'
-PASSWORD = 'momo'
+NICKNAME = 'momobot'
+PASSWORD = ''
 
 # The IRC server and port to connect to
 SERVER = 'irc.rizon.net'
