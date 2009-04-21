@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # The IRC nickname and password to connect and identify with
-NICKNAME = 'momobot'
+NICKNAME = 'momobot2'
 PASSWORD = ''
 
 # The IRC server and port to connect to
