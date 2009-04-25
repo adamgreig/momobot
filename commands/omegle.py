@@ -47,6 +47,7 @@ class client(threading.Thread):
                         params = urllib.urlencode({'id':self.id_speak,
                                                    'msg':msg})
                         urllib.urlopen(send_url, params)
+                        sleep(1)
                     elif event[0] == 'connected':
                         self.irc.say("%s * CONNECTED" % self.myid)
                     elif event[0] == 'strangerDisconnected':
