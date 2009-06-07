@@ -44,6 +44,8 @@ class Bot:
                         time.sleep(self.settings.COMMAND_DELAY)
                         command(data)
                         return
+            else:
+                irc.say(data['message'], data['channel'])
     
     def register_command(self, command_name, command):
         if callable(command):

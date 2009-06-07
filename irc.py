@@ -2,7 +2,7 @@
 """
 Handle talking to an IRC server.
 """
-
+import bot
 import time
 import socket
 import settings
