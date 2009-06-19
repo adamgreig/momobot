@@ -3,6 +3,7 @@
 Handle actually being a useful bot
 """
 
+import socket
 import time
 import irc
 import command_loader
@@ -20,13 +21,38 @@ class Bot:
         self.nickname = settings.NICKNAME
         self.irc = irc.IRC(settings.NICKNAME, settings.CTCP_VERSION)
         self.commands = {}
+        self.channels = []
         command_loader.CommandLoader(self)
         self.irc.register_callback('channel_message', self.process_message)
         self.irc.connect(settings.SERVER, settings.PORT)
         if settings.PASSWORD:
             self.irc.identify(settings.PASSWORD)
         self.irc.join(settings.CHANNEL)
-    
+        self.say_q = []
+
+  #  def say(self, message, channel=""):
+   #     """
+    #    Adds say message to speak queue for spam control. This then passes
+     #   to the speak method which does the actual say in channel, or channels
+      #  """
+       # message = message.encode("utf-8")
+        #self.say_q.append(message)
+
+
+
+
+        #self.speak(message, channel)
+
+    def say(self, message, channel=""):
+        if channel:
+            for channel in self.channels:
+                self.socket.send("PRIVMSG %s :%s\r\n" % (channel,
+                                                     message))
+        else:
+            if channel in self.channels:
+                self.socket.send("PRIVMSG %s :%s\r\n" % (channel,
+                                                    message))
+
     def process(self):
         self.irc.read()
     
@@ -45,7 +71,8 @@ class Bot:
                         command(data)
                         return
             else:
-                irc.say(data['message'], data['channel'])
+                #irc.say(data['message'], data['channel'])
+                pass
     
     def register_command(self, command_name, command):
         if callable(command):

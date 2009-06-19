@@ -18,7 +18,7 @@ class Twitter:
         feed_url = twitter_feed_url % username
         feed = feedparser.parse(feed_url)
         if len(feed.entries) > 0:
-            self.bot.irc.say('%s (%s)' % (feed.entries[0]['title'],
+            self.bot.say('%s (%s)' % (feed.entries[0]['title'],
                                           feed.entries[0]['updated']),
                              data['channel'])
 

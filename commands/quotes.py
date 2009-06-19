@@ -30,6 +30,7 @@ class Quotes:
     
     def __init__(self, bot):
         self.bot = bot
+        self.quotes = {}
         self.__load_quotes()
         bot.register_command('setquote', self.set_quote)
         bot.register_command('quote', self.get_quote)
@@ -37,7 +38,7 @@ class Quotes:
     
     def set_quote(self, data):
         self.quotes[data['username']] = data['message']
-        self.bot.irc.say("Okay, %s" % data['username'], data['channel'])
+        self.bot.say("Okay, %s" % data['username'], data['channel'])
         self.__store_quotes()
     
     def get_quote(self, data):
@@ -51,7 +52,7 @@ class Quotes:
         if quotee == self.bot.nickname and self.quotes:
             quotee = random.choice(self.quotes.keys())
         
-        self.bot.irc.say(self.__get_quote(requester, quotee))
+        self.bot.say(self.__get_quote(requester, quotee))
 
     def __get_quote(self, requester, quotee):
         if quotee in self.quotes:
@@ -64,13 +65,13 @@ class Quotes:
             return "%s hasn't set a quote yet." % quotee
             
     def __store_quotes(self):
-        f = open(quotes_file, 'w')
+        f = open(quotes_file, 'wb')
         pickle.dump(self.quotes, f)
         f.close()
     
     def __load_quotes(self):
         if os.path.exists(quotes_file):
-            f = open(quotes_file, 'r')
+            f = open(quotes_file, 'rb')
             self.quotes = pickle.load(f)
             f.close()
         else:

@@ -16,20 +16,23 @@ class Selfdestruct:
         
         def init(self, data):
             if data['message'] == self.code:
-                self.bot.irc.say('SELF DESTRUCT SEQUENCE STARTED. DESTRUCTION IN FIVE SECONDS...')
+                self.bot.say('SELF DESTRUCT SEQUENCE STARTED. DESTRUCTION IN FIVE SECONDS...')
                 sleep(1)
-                self.bot.irc.say('FOUR...')
+                self.bot.say('FOUR...')
                 sleep(1)
-                self.bot.irc.say('THREE...')
+                self.bot.say('THREE...')
                 sleep(1)
-                self.bot.irc.say('TWO...')
+                self.bot.say('TWO...')
                 sleep(1)
-                self.bot.irc.say('ONE...')
-                sleep(1)
-                import os
-                os._exit(1)
+                if "skk" in data['username']:
+                    self.bot.say("just kidding :3, feck you %s" % data['username'])
+                else:
+                    self.bot.say('ONE...')
+                    sleep(1)
+                    import os
+                    os._exit(1)
             else:
-                self.bot.irc.say('INCORRECT SELF DESTRUCT SEQUENCE AUTHORISATION CODE.')
+                self.bot.say('INCORRECT SELF DESTRUCT SEQUENCE AUTHORISATION CODE.')
 
 
         def abort(self, data):

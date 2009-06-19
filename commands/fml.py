@@ -43,7 +43,7 @@ class Fml:
     
     def fml(self, data):
         random_number = random.randrange(0,499)
-        if random_number == 123:
+        if random_number == 123 and data['username'] != "redd":
             self.bot.irc.say('f YOUR life')
             os._exit(1)
         fml = self.grab_random()
@@ -51,14 +51,18 @@ class Fml:
             self.bot.irc.notice(data['username'], "'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
         else:
             self.bot.irc.say("'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
-        self.counter(data['username'])
+        if "Xait" in data['username']:
+            user = "XaiterPhone"
+        else:
+            user = data['username']
+        self.counter(user)
         self.__store_stats()
 
     def counter(self, user):
         if self.stats.has_key(user):
             self.stats[user] += 1
-            if self.stats[user] == 1000:
-                self.bot.irc.say('Congratulations, you have read ONE THOUSAND FMLs! You must hate yourself.')
+            if self.stats[user] % 1000 == 0:
+                self.bot.irc.say('Congratulations, you have read %s FMLs! You must hate yourself.' % str(self.stats[user]))
         else:
             self.stats[user] = 1
             

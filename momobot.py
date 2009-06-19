@@ -10,4 +10,7 @@ import bot
 momobot = bot.Bot(settings)
 
 while True:
-    momobot.process()
+    try:
+        momobot.process()
+    except:
+        momobot.irc.say('Exception occured.')

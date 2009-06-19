@@ -76,7 +76,7 @@ class Omegle:
     def start(self, data):
         global started
         if started:
-            self.bot.irc.say('A chat is already in progress, not starting.')
+            self.bot.say('A chat is already in progress, not starting.')
             return
         
         started = True
@@ -89,7 +89,7 @@ class Omegle:
         chat_id_2 = f.read()
         chat_id_2 = chat_id_2[1:-1]
         
-        self.bot.irc.say('Got chat IDs, starting...')
+        self.bot.say('Got chat IDs, starting...')
         
         self.starttime = datetime.datetime.today()
         self.c1 = client(self.bot.irc, chat_id_1, chat_id_2)
@@ -103,19 +103,19 @@ class Omegle:
         if started:
             client.closed_chats.append(self.c1.id_check)
             client.closed_chats.append(self.c2.id_check)
-            self.bot.irc.say("%s * DISCONNECTED" % self.c1.myid)
+            self.bot.say("%s * DISCONNECTED" % self.c1.myid)
             urllib.urlopen(dc_url, self.c1.id_speak_p)
-            self.bot.irc.say("%s * DISCONNECTED" % self.c2.myid)
+            self.bot.say("%s * DISCONNECTED" % self.c2.myid)
             urllib.urlopen(dc_url, self.c2.id_speak_p)
             started = False
     
     def split1(self, data):
         urllib.urlopen(dc_url, self.c1.id_check_p)
-        self.bot.irc.say("*1 Split")
+        self.bot.say("*1 Split")
     
     def split2(self, data):
         urllib.urlopen(dc_url, self.c2.id_check_p)
-        self.bot.irc.say("*2 Split")
+        self.bot.say("*2 Split")
     
     def send1(self, data):
         global started
