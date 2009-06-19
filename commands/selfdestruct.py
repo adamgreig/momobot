@@ -12,7 +12,7 @@ class Selfdestruct:
             self.code = ''.join([random.choice(chars) for i in range(10)])
 
         def confirm(self, data):
-            self.bot.irc.notice(data['username'], 'SELF DESTRUCT CODE %s' % self.code)
+            self.bot.notice(data['username'], 'SELF DESTRUCT CODE %s' % self.code)
         
         def init(self, data):
             if data['message'] == self.code:
@@ -24,13 +24,10 @@ class Selfdestruct:
                 sleep(1)
                 self.bot.say('TWO...')
                 sleep(1)
-                if "skk" in data['username']:
-                    self.bot.say("just kidding :3, feck you %s" % data['username'])
-                else:
-                    self.bot.say('ONE...')
-                    sleep(1)
-                    import os
-                    os._exit(1)
+                self.bot.say('ONE...')
+                sleep(1)
+                import os
+                os._exit(1)
             else:
                 self.bot.say('INCORRECT SELF DESTRUCT SEQUENCE AUTHORISATION CODE.')
 

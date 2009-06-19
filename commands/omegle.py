@@ -92,8 +92,8 @@ class Omegle:
         self.bot.say('Got chat IDs, starting...')
         
         self.starttime = datetime.datetime.today()
-        self.c1 = client(self.bot.irc, chat_id_1, chat_id_2)
-        self.c2 = client(self.bot.irc, chat_id_2, chat_id_1)
+        self.c1 = client(self.bot, chat_id_1, chat_id_2)
+        self.c2 = client(self.bot, chat_id_2, chat_id_1)
         
         self.c1.start()
         self.c2.start()

@@ -44,13 +44,13 @@ class Fml:
     def fml(self, data):
         random_number = random.randrange(0,499)
         if random_number == 123 and data['username'] != "redd":
-            self.bot.irc.say('f YOUR life')
+            self.bot.say('f YOUR life')
             os._exit(1)
         fml = self.grab_random()
         if data['message'] == "p":
-            self.bot.irc.notice(data['username'], "'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
+            self.bot.notice(data['username'], "'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
         else:
-            self.bot.irc.say("'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
+            self.bot.say("'%s' | Agreed: %s | Deserved: %s" % (fml[0], fml[2], fml[3]))
         if "Xait" in data['username']:
             user = "XaiterPhone"
         else:
@@ -62,7 +62,7 @@ class Fml:
         if self.stats.has_key(user):
             self.stats[user] += 1
             if self.stats[user] % 1000 == 0:
-                self.bot.irc.say('Congratulations, you have read %s FMLs! You must hate yourself.' % str(self.stats[user]))
+                self.bot.say('Congratulations, you have read %s FMLs! You must hate yourself.' % str(self.stats[user]))
         else:
             self.stats[user] = 1
             
@@ -70,11 +70,11 @@ class Fml:
         if data['message']:
             target = data['message'].split()[0]
             if self.stats.has_key(target):
-                self.bot.irc.say("%s: %s" % (target, self.stats[target]))
+                self.bot.say("%s: %s" % (target, self.stats[target]))
             else:
-                self.bot.irc.say("No stats for %s" % target)
+                self.bot.say("No stats for %s" % target)
         else:
-            self.bot.irc.say("%s: %s" % (data['username'], self.stats[data['username']]))
+            self.bot.say("%s: %s" % (data['username'], self.stats[data['username']]))
 
     def fml_stats_all(self, data):
         string = ""
@@ -82,7 +82,7 @@ class Fml:
         items_list.sort(lambda x,y: cmp(y[1],x[1]))
         for name, count in items_list:
             string += (" %s: %s ||" % (name, str(count)))
-        self.bot.irc.say("||"+string)
+        self.bot.say("||"+string)
 
     def __store_stats(self):
         f = open(stats_file, "wb")
