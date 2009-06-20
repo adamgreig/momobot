@@ -9,6 +9,7 @@ import irc
 import command_loader
 import datetime
 import Queue
+import sys
 
 class BotError(Exception):
     pass
@@ -55,9 +56,12 @@ class MessageQueue:
         self.__queue.put(message(__noticeMsg, message, user))
         
     def process_message_queue(self):
+        if self.__queue.qsize() == 0:
+            return
+
         if self.__timeMessageLastSent != None and (self.__timeMessageLastSent - datetime.now) <= self.__messageWaitMilliseconds:
             return
-    
+
         currentMessage = self.__queue.get()
         
         if currentMessage.type == __sayMsg:
@@ -89,13 +93,15 @@ class Bot:
         self.irc.join(settings.CHANNEL)
 
     def process(self):
-    
         while True:
-#            try:
-            self.irc.read()
-            self.__messageQueue.process_message_queue()
-#            except:
-#                self.say('Exception occured.')
+            try:
+                self.irc.read()
+                self.__messageQueue.process_message_queue()
+            except:
+                self.irc.say('Exception occured.')
+		time.sleep(10)
+		self.irc.quit()
+                raise
             
     
     def process_message(self, data):

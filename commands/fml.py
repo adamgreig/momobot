@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*
+	# -*- coding: utf-8 -*
 # Peter Zatka-Haas - June 2009
 
 import pickle
@@ -27,6 +27,7 @@ class Fml:
         file_object = urllib.urlopen(fml_feed_url)
         xmldoc = minidom.parse(file_object)
         items_node = xmldoc.firstChild.childNodes[1].firstChild
+
         fml_id = items_node.getAttribute('id')
         while fml_id in self.ids:
             file_object = urllib.urlopen(fml_feed_url)
@@ -36,8 +37,17 @@ class Fml:
         self.ids.append(fml_id)
         date = items_node.childNodes[2].firstChild.data
         text = items_node.childNodes[6].firstChild.data
-        agree = items_node.childNodes[3].firstChild.data
-        deserved = items_node.childNodes[4].firstChild.data
+        
+        if items_node.childNodes[3].firstChild != None:
+            agree = items_node.childNodes[3].firstChild.data
+        else:
+            agree = 'fuck'
+
+        if items_node.childNodes[4].firstChild != None:
+            deserved = items_node.childNodes[4].firstChild.data
+        else:
+            deserved = 'you'
+
         fml_set = [text, date, agree, deserved]
         return fml_set
     
