@@ -38,7 +38,7 @@ class Fml:
             self.go_ahead = 1
             return "http://api.betacie.com/view/" + choice + "?language=en&key=readonly"
         else:
-            self.bot.irc.say("Choose an option, beeyotch")
+            self.bot.say("Choose an option, beeyotch")
             self.go_ahead = 0
             return "ERROR"
 
@@ -62,7 +62,7 @@ class Fml:
                 fml_set = [text, date, agree, deserved, id_string]
                 return fml_set
             except:
-                self.bot.irc.say("Either the number has no post, or SOMETHING FUCKED UP and i blame you")
+                self.bot.say("Either the number has no post, or SOMETHING FUCKED UP and i blame you")
         else:
             return 1
     
@@ -78,7 +78,7 @@ class Fml:
             choice = "random"
         fml = self.grab_random(choice)
         if self.go_ahead:
-            self.bot.irc.say("'%s' | Agreed: %s | Deserved: %s | Id: %s" % (fml[0], fml[2], fml[3], fml[4]))
+            self.bot.say("'%s' | Agreed: %s | Deserved: %s | Id: %s" % (fml[0], fml[2], fml[3], fml[4]))
         if "Xait" in data['username']:
             user = "XaiterPhone"
         else:

@@ -43,15 +43,15 @@ class client(threading.Thread):
                     if event[0] == 'gotMessage':
                         msg = event[1]
                         msg = msg.encode('utf-8')
-                        self.irc.say("<%s> %s" % (self.myid, msg))
+                        self.say("<%s> %s" % (self.myid, msg))
                         params = urllib.urlencode({'id':self.id_speak,
                                                    'msg':msg})
                         urllib.urlopen(send_url, params)
                         time.sleep(1)
                     elif event[0] == 'connected':
-                        self.irc.say("%s * CONNECTED" % self.myid)
+                        self.say("%s * CONNECTED" % self.myid)
                     elif event[0] == 'strangerDisconnected':
-                        self.irc.say("%s * DISCONNECTED" % self.myid)
+                        self.say("%s * DISCONNECTED" % self.myid)
                         urllib.urlopen(dc_url, self.id_speak_p)
                         client.closed_chats.append(self.id_speak)
                         started = False
@@ -60,7 +60,7 @@ class client(threading.Thread):
                 if chat == self.id_check:
                     client.closed_chats.remove(chat)
                     started = False
-                    self.irc.say("%s * CLOSED" % self.myid)
+                    self.say("%s * CLOSED" % self.myid)
                     return
 
 class Omegle:
