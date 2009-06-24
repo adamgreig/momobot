@@ -46,6 +46,7 @@ class IRC:
         self.channels = []
         
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.settimeout(0.5)
     
     def connect(self, server, port):
         """
@@ -149,8 +150,12 @@ class IRC:
         Read in data from the IRC socket then parse it
         This should be called all the time
         """
-        recv_buffer = self.socket.recv(4096)
-        self.__parse(recv_buffer)
+        try:
+            recv_buffer = self.socket.recv(4096)
+        except socket.timeout:
+            pass
+        else:
+            self.__parse(recv_buffer)
     
     
     def __parse(self, recv_buffer):
