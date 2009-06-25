@@ -73,8 +73,8 @@ class Bot:
         self.__queue.addActMessage(message, channel)
     
     def privmsg(self, user, message):
-        self.__queue.addPrivateMessage(message, channel)
+        self.__queue.addPrivateMessage(user, message)
     
     def notice(self, user, message):
-        self.__queue.addNoticeMessage(message, channel)
+        self.__queue.addNoticeMessage(user, message)
         
