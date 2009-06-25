@@ -280,7 +280,7 @@ class IRC:
         accept a two arguments: a dictionary of the relevent data and
         a reference to the current IRC connection
         """
-        if callable(callback):
+        if hasattr(callback, '__call__'):
             self.callbacks[callback_type] = callback
         else:
             raise CommandError

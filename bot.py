@@ -61,7 +61,7 @@ class Bot:
                 pass
     
     def register_command(self, command_name, command):
-        if callable(command):
+        if hasattr(command, '__call__'):
             self.commands[command_name] = command
         else:
             raise CommandError

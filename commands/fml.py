@@ -3,7 +3,7 @@
 
 import pickle
 import os
-import urllib
+import urllib2
 import random
 from xml.dom import minidom
 
@@ -47,7 +47,7 @@ class Fml:
         if url == "ERROR":
             return 1
         try:
-            file_object = urllib.urlopen(url)
+            file_object = urllib2.urlopen(url)
             xmldoc = minidom.parse(file_object)
             items_node = xmldoc.getElementsByTagName("root")[0].getElementsByTagName("items")[0].getElementsByTagName("item")[0]
             date = items_node.getElementsByTagName("date")[0].firstChild.data
@@ -78,7 +78,7 @@ class Fml:
         self.__store_stats()
 
     def counter(self, user):
-        if self.stats.has_key(user):
+        if user in self.stats:
             self.stats[user] += 1
             if self.stats[user] % 1000 == 0:
                 self.bot.say('Congratulations, you have read %s FMLs! You must hate yourself.' % str(self.stats[user]))

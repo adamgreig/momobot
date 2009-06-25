@@ -25,7 +25,7 @@ class MessageQueue:
         if messagesPerSecond <= 0:
             raise Exception, "messagesPerSecond must be greater than 0."
         
-        self.__messageWaitMilliseconds = datetime.timedelta(milliseconds=(1000 / messagesPerSecond))
+        self.__messageWaitMilliseconds = datetime.timedelta(milliseconds=(1000 // messagesPerSecond))
         self.__queue = Queue.Queue()
     
     def addSayMessage(self, message, channel=''):
