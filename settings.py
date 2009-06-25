@@ -19,3 +19,5 @@ COMMAND_DELAY = 0.3
 
 # The IRC VERSION reply
 CTCP_VERSION = 'Momobot v0.1a'
+
+SELFDESTRUCT_USERS = ['Randomskk', 'redd', 'Xaiter']
