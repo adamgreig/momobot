@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import feedparser
+from xml.dom import minidom
+import urllib2
 
 twitter_feed_url = 'http://twitter.com/statuses/user_timeline/%s.rss'
 
@@ -16,12 +17,20 @@ class Twitter:
     def twitter(self, data):
         username = data['message'].split(' ')[0]
         feed_url = twitter_feed_url % username
-        feed = feedparser.parse(feed_url)
-        if len(feed.entries) > 0:
-            self.bot.say('%s (%s)' % (feed.entries[0]['title'],
-                                          feed.entries[0]['updated']),
-                             data['channel'])
-
+        f = urllib2.urlopen(feed_url)
+        xmldoc = minidom.parse(f)
+        items = xmldoc.getElementsByTagName('item')
+        if items:
+            item = items[0]
+            status = item.getElementsByTagName('description')[0].firstChild
+            if status:
+                status = status.data
+            date = item.getElementsByTagName('pubDate')[0].firstChild
+            if date:
+                date = date.data
+            message = status + ' (' + date + ')'
+            self.bot.say(message.encode('utf-8'), data['channel'])
+    
     def socks(self, data):
         data['message'] = 'sockington'
         self.twitter(data)
