@@ -60,8 +60,8 @@ class Fml:
                 deserved = deserved.data
             id_string = str(items_node.getAttribute('id'))
             fml_set = [text, date, agree, deserved, id_string]
-        except Exception as inst:
-            self.bot.say("Error parsing FML: %s", inst)
+        except Exception, e:
+            self.bot.say("Error parsing FML: %s", e)
         return fml_set
     
     def fml(self, data):
