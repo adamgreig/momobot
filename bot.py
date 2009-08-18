@@ -42,7 +42,6 @@ class Bot:
                 raise CommandError
             except Exception, e:
                 self.irc.say('Exception occured: %s' % e)
-                raise e
     
     def process_message(self, data):
         for command_indicator in self.settings.COMMAND_INDICATORS:
