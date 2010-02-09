@@ -62,7 +62,8 @@ class IRC:
         
         self.__callback('connect', {'server': server, 'port': port,
                         'nickname': nickname})
-    
+    	
+	
     def identify(self, password):
         """
         Identify with NickServ
@@ -122,6 +123,9 @@ class IRC:
                 self.socket.send('PRIVMSG %s :%s\r\n' %
                                  (channel, message))
     
+    def kick(self, channel, nick, message):
+        self.socket.send('KICK %s %s :%s\r\n' % (channel, nick, message))
+	
     def act(self, message, channel=''):
         """
         Send a CTCP action to the channel or all channels
