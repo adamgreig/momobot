@@ -39,7 +39,6 @@ class Bot:
             try:
                 self.irc.read()
                 self.__queue.process_message_queue()
-                raise CommandError
             except Exception, e:
                 self.irc.say('Exception occured: %s' % e)
     
